@@ -2,12 +2,20 @@ server {
     listen 80 default_server backlog=2048;
 
     root /srv/www/_site;
-    index index.html;
 
     # Make site accessible from http://localhost/
-    server_name localhost;
+
+    error_page 404 /404.html;
+    location /404.html { root /home/deploy/applications/blog; }
+
+    error_page 500 /500.html;
+    location /500.html { root /home/deploy/applications/blog; }
+
+    rewrite ^/index.html$ / permanent;
+    rewrite ^(/.+)/$ $1 permanent;
+    rewrite ^(/.+)/index.html$ $1 permanent;
 
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri.html $uri/index.html =404;
     }
 }
